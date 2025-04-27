@@ -9,26 +9,22 @@
             [pohjavirta.exchange :as exchange]
             [ring.util.response :as resp]))
 
-(defn index_get
-  [_req]
-  {:status 200,
-   :body (str (h/html (h/raw "<!DOCTYPE html>")
-                      (Layout {:title "beldmian's blog", :description ""}
-                              (home-page))))})
-(defn blog_get
-  [_req]
-  {:status 200,
-   :body (str (h/html (h/raw "<!DOCTYPE html>")
-                      (Layout {:title "beldmian's blog articles",
-                               :description ""}
-                              (blog-page))))})
+(defn make_page_handler
+  [metadata page]
+  (fn [_]
+    {:status 200,
+     :body (str (h/html (h/raw "<!DOCTYPE html>") (Layout metadata page)))}))
 
-(defn cv_get
-  [_req]
-  {:status 200,
-   :body (str (h/html (h/raw "<!DOCTYPE html>")
-                      (Layout {:title "beldmian's cv", :description ""}
-                              (cv-download-page))))})
+(def index_get
+  (make_page_handler {:title "beldmian's blog", :description ""} home-page))
+
+(def blog_get
+  (make_page_handler {:title "beldmian's blog articles", :description ""}
+                     blog-page))
+
+(def cv_get
+  (make_page_handler {:title "beldmian's cv", :description ""}
+                     cv-download-page))
 
 (defn article_get
   [req]

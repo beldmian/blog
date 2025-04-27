@@ -1,11 +1,13 @@
 (ns ui.complex.navigation)
 
-(defn nav_link
-  [name href]
-  [:a {:href href, :style {:color "#F1FFFA", :margin "0 10px"}} name])
+(defmacro nav_link
+  [name href is_blank]
+  [:a
+   {:href href,
+    :target (if is_blank "_blank" "_self"),
+    :style {:color "#F1FFFA", :margin "0 10px"}} name])
 
-(defn Navigation
-  []
+(def Navigation
   [:div
    {:style {:width "100%",
             :display "flex",
@@ -15,6 +17,7 @@
             :margin "10px 0",
             :background-color "#464D77",
             :border-radius "10px",
-            :color "#F1FFFA"}} (nav_link "home" "/")
-   (nav_link "github" "https://github.com/beldmian")
-   (nav_link "articles" "/blog") (nav_link "cv" "/cv")])
+            :color "#F1FFFA"}} (nav_link "home" "/" false)
+   (nav_link "articles" "/blog" false)
+   (nav_link "github" "https://github.com/beldmian" true)
+   (nav_link "cv" "/cv" false)])

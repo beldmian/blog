@@ -14,4 +14,4 @@
    [:p {:style {:color "#3d3d3d"}} (:date article)] [:p (:description article)]
    (Button "read" (str "/article/" id))])
 
-(defn blog-page [] [:div (map article-entry articles-list)])
+(def blog-page [:div (map article-entry articles-list)])

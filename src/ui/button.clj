@@ -1,6 +1,6 @@
 (ns ui.button)
 
-(defn Button
+(defmacro Button
   [text link-href]
   [:a
    {:style {:transition "all 0.3s",

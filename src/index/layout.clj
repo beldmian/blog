@@ -13,4 +13,4 @@
     [:title (:title page-meta)]
     [:meta {:name "description", :content (:description page-meta)}]
     [:meta {:name "viewport", :content "width=device-width, initial-scale=1"}]]
-   [:body (Container (Navigation) children)]])
+   [:body (Container Navigation children)]])
