@@ -1,0 +1,10 @@
+{:aliases {:uberdeps {:main-opts ["-m" "uberdeps.uberjar"],
+                      :replace-deps {uberdeps/uberdeps {:mvn/version "1.4.0"}},
+                      :replace-paths []}},
+ :deps {amalloy/ring-gzip-middleware {:mvn/version "0.1.4"},
+        hiccup/hiccup {:mvn/version "2.0.0-RC5"},
+        markdown-clj/markdown-clj {:mvn/version "1.12.3"},
+        metosin/pohjavirta {:mvn/version "0.0.1-alpha7"},
+        metosin/reitit {:mvn/version "0.8.0"},
+        org.clojure/clojure {:mvn/version "1.12.0"}},
+ :paths ["src" "resources"]}
