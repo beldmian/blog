@@ -1,6 +1,6 @@
 (ns ui.container)
 
-(defn Container
-  [& child]
-  [:div {:style {:max-width "70%", :margin "0 auto"}} child])
+(def styles [:.container {:width "70%", :margin "0 auto"}])
+
+(defn Container [& child] [:div {:class "container"} child])
 
