@@ -2,16 +2,13 @@
   (:require [pohjavirta.server :as server]
             [ring.middleware.params :as params]
             [reitit.ring :as ring]
-            [ring.middleware.gzip]
             [server.routes]))
 
 (def app
   (ring/ring-handler (ring/router [server.routes/routes]
-                                  {:data {:middleware
-                                            [ring.middleware.gzip/wrap-gzip
-                                             params/wrap-params]}})
+                                  {:data {:middleware [params/wrap-params]}})
                      (ring/create-default-handler)
-                     {:inject-router? false}))
+                     {:inject-router? false, :inject-match? false}))
 
 (defn -main
   [& _args]
