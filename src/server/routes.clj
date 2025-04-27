@@ -49,7 +49,14 @@
                "Cache-Control"
                "max-age=31536000"))
 
+(defn robots_handler
+  [_req]
+  (resp/header (resp/resource-response "public/robots.txt")
+               "Cache-Control"
+               "max-age=31536000"))
+
 (def routes
   [["/" (exchange/constantly index_get)]
    ["/blog" (exchange/constantly blog_get)] ["/cv" (exchange/constantly cv_get)]
-   (make_articles_router articles-list) ["/public/*path" static_handler]])
+   (make_articles_router articles-list) ["/public/*path" static_handler]
+   ["/robots.txt" robots_handler]])
