@@ -1,16 +1,22 @@
 (ns server.core
   (:require [pohjavirta.server :as server]
             [reitit.ring :as ring]
-            [server.cache :as cache]
-            [server.gzip :as gzip]
+            [server.middleware.cache :as cache]
+            [server.middleware.gzip :as gzip]
+            [server.middleware.log :as log]
             [server.routes]))
 
-(def app
+(defn make-app
+  [params]
   (ring/ring-handler (ring/router [server.routes/routes])
                      (ring/create-default-handler)
-                     {:middleware [cache/wrap-cache gzip/wrap-gzip],
+                     {:middleware [(if (:log params) log/wrap-request-log [])
+                                   cache/wrap-cache gzip/wrap-gzip],
                       :inject-router? false,
                       :inject-match? false}))
+
+; Enabling of logs reduces performance significantly
+(def app (make-app {:log false}))
 
 (defn -main
   [& _args]

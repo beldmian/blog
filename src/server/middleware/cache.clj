@@ -1,5 +1,5 @@
 ;; WARNING: Authored by Gemini 2.5 Pro AI model
-(ns server.cache)
+(ns server.middleware.cache)
 
 (defn- cache-key
   "Generates a cache key from the request map.

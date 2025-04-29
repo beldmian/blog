@@ -1,5 +1,5 @@
 ;; WARNING: Authored by Gemini 2.5 Pro AI model
-(ns server.gzip
+(ns server.middleware.gzip
   (:require [clojure.java.io :as io])
   (:import [java.util.zip GZIPOutputStream]
            [java.io ByteArrayOutputStream InputStream]))
