@@ -34,10 +34,12 @@
 
 (defn make_article_route
   [[id _article]]
-  [(str "/article/" id)
+  [(format "/article/%s" id)
    (exchange/constantly (fn [_] (article_get {:path-params {:id id}})))])
 
 (defn make_articles_router [articles] (map make_article_route articles))
+
+(def article-routes (make_articles_router articles-list))
 
 (defn static_handler
   [request]
@@ -54,5 +56,5 @@
 (def routes
   [["/" (exchange/constantly index_get)]
    ["/blog" (exchange/constantly blog_get)] ["/cv" (exchange/constantly cv_get)]
-   (make_articles_router articles-list) ["/public/*path" static_handler]
+   article-routes ["/public/*path" static_handler]
    ["/robots.txt" robots_handler]])
