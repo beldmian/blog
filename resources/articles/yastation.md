@@ -1,3 +1,10 @@
+---
+title: Creating yastation — a console client for managing Yandex Station
+description: One day, while sitting at work and listening to music on my Yandex Station, I discovered something interesting - I couldn't simply skip the track. This unfortunate situation prompted me to create my own solution.
+date: 03/27/2022
+tags: golang, api, yandex, cli
+---
+
 # Creating yastation — a console client for managing Yandex Station
 
 One day, while sitting at work and listening to music on my Yandex Station (speaker device from Yandex company, something like Home Pod from Apple), I discovered something interesting - I couldn't simply skip the track. You might ask, "How could that happen?" I'd reply that yesterday I lost my voice during a heated political debate, and my phone, inconveniently, was further away than I could reach. Ultimately, this unfortunate situation prompted me to create my own solution (yet another "bicycle" [a Russian idiom for reinventing the wheel]).

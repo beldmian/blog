@@ -17,6 +17,21 @@
    :display "flex",
    :flex-direction "column"})
 
+;; Function to render tags
+(defn render-article-tags [tags]
+  (when (seq tags)
+    [:div {:style {:display "flex"
+                   :flex-wrap "wrap"
+                   :gap (responsive/spacing :xs)
+                   :margin-bottom (responsive/spacing :sm)}}
+     (for [tag tags]
+       [:span {:style {:background-color colors/surface-dark
+                       :padding (str (responsive/spacing :xs) " " (responsive/spacing :sm))
+                       :border-radius "4px"
+                       :font-size "0.8rem"
+                       :color colors/text-secondary}}
+        tag])]))
+
 ;; Function to generate article card with responsive behavior
 (defn article-entry
   [[id article]]
@@ -41,6 +56,9 @@
     [:p {:style {:margin (str (responsive/spacing :sm) " 0 " (responsive/spacing :md) " 0")
                  :line-height "1.6"}}
      (:description article)]]
+
+   ;; Article tags
+   (render-article-tags (:tags article))
 
    ;; Article footer with button
    [:div {:style {:display "flex"

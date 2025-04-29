@@ -7,6 +7,7 @@
 
 (def background "#FFFFFF")    ;; White
 (def surface "#F5F7FA")       ;; Light gray for cards/surfaces
+(def surface-dark "#E8ECF0")  ;; Slightly darker gray for tags
 
 (def text-primary "#212121")  ;; Almost black
 (def text-secondary "#757575") ;; Medium gray
