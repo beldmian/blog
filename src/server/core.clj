@@ -1,14 +1,16 @@
 (ns server.core
   (:require [pohjavirta.server :as server]
-            [ring.middleware.params :as params]
             [reitit.ring :as ring]
+            [server.cache :as cache]
+            [server.gzip :as gzip]
             [server.routes]))
 
 (def app
-  (ring/ring-handler (ring/router [server.routes/routes]
-                                  {:data {:middleware [params/wrap-params]}})
+  (ring/ring-handler (ring/router [server.routes/routes])
                      (ring/create-default-handler)
-                     {:inject-router? false, :inject-match? false}))
+                     {:middleware [cache/wrap-cache gzip/wrap-gzip],
+                      :inject-router? false,
+                      :inject-match? false}))
 
 (defn -main
   [& _args]
