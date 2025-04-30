@@ -1,5 +1,6 @@
 (ns server.core
-  (:require [pohjavirta.server :as server]
+  (:require [clojure.edn :as edn]
+            [pohjavirta.server :as server]
             [reitit.ring :as ring]
             [server.middleware.cache :as cache]
             [server.middleware.gzip :as gzip]
@@ -22,7 +23,8 @@
   [& _args]
   (let [cpus (.availableProcessors (Runtime/getRuntime))]
     (-> #'app
-        (server/create {:port 8080,
+        (server/create {:port (edn/read-string (or (System/getenv "PORT")
+                                                   "8080")),
                         :host "0.0.0.0",
                         :io-threads (* 2 cpus),
                         :worker-threads (* 8 cpus)})
