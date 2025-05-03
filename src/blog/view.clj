@@ -46,9 +46,7 @@
     [:p
      {:style {:color colors/text-secondary,
               :font-size "0.9rem",
-              :margin (str (responsive/spacing :xs) " 0")}}
-     [:span {:style {:margin-right (responsive/spacing :xs)}} "📅"]
-     (:date article)]]
+              :margin (str (responsive/spacing :xs) " 0")}} (:date article)]]
    ;; Article description
    [:div {:style {:flex "1"}}
     [:p

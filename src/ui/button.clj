@@ -17,6 +17,7 @@
     :box-shadow (str "0 2px 4px " (colors/rgba colors/primary-dark 0.2))}
    [:&:hover
     {:background-color colors/primary-light,
+     :color "white",
      :transform "translateY(-2px)",
      :box-shadow (str "0 4px 8px " (colors/rgba colors/primary-dark 0.3))}]
    [:&:active

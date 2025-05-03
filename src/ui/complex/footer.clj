@@ -29,4 +29,4 @@
 (def Footer
   [:div {:class "footer"}
    [:div {:class "footer-content"}
-    [:p "© 2024 beldmian. Built with Clojure and ❤️"]]])
+    [:p "© 2025 beldmian. Built with Clojure and <3"]]])

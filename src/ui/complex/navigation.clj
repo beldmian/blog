@@ -53,7 +53,6 @@
   [:a {:href href, :target (if is_blank "_blank" "_self")} name])
 
 (def Navigation
-  [:div {:class "nav"} (nav_link "Home" "/" false)
-   (nav_link "Articles" "/blog" false)
-   (nav_link "GitHub" "https://github.com/beldmian" true)
-   (nav_link "CV" "/cv" false)])
+  [:div {:class "nav"} (nav_link "beldmian" "/" false)
+   (nav_link "articles" "/blog" false) (nav_link "cv" "/cv" false)
+   (nav_link "github" "https://github.com/beldmian" true)])

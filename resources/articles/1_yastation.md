@@ -2,7 +2,7 @@
 title: Creating yastation — a console client for managing Yandex Station
 description: One day, while sitting at work and listening to music on my Yandex Station, I discovered something interesting - I couldn't simply skip the track. This unfortunate situation prompted me to create my own solution.
 date: 03/27/2022
-tags: golang, api, yandex, cli
+tags: python, api, yandex, cli
 ---
 
 # Creating yastation — a console client for managing Yandex Station
