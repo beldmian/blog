@@ -5,11 +5,16 @@
             [server.middleware.cache :as cache]
             [server.middleware.gzip :as gzip]
             [server.middleware.log :as log]
-            [server.routes]))
+            [server.routes]
+            [server.sitemap]))
 
 (defn make-app
   [params]
-  (ring/ring-handler (ring/router [server.routes/routes])
+  (ring/ring-handler (ring/router [server.routes/routes
+                                   ["/sitemap.xml"
+                                    (server.sitemap/gen-sitemap-handler
+                                      "https://blog.beldmian.ru"
+                                      server.routes/routes)]])
                      (ring/create-default-handler)
                      {:middleware [(if (:log params) log/wrap-request-log [])
                                    cache/wrap-cache gzip/wrap-gzip],

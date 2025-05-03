@@ -52,5 +52,8 @@
                "max-age=31536000"))
 
 (def routes
-  [["/" index_get] ["/blog" blog_get] ["/cv" cv_get] article-routes
-   ["/public/*path" static_handler] ["/robots.txt" robots_handler]])
+  (into []
+        (concat [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]
+                 ["/public/*path" static_handler]
+                 ["/robots.txt" robots_handler]]
+                article-routes)))
