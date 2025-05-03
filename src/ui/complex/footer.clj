@@ -20,7 +20,7 @@
      :align-items "center",
      :max-width "1200px",
      :margin "0 auto",
-     :padding (str "0 " (responsive/spacing :md))}
+     :padding (str "0 " (responsive/spacing :md))} [:p {:margin "0"}]
     ;; Media query for mobile
     [(responsive/media-query-max :xs)
      {:flex-direction "column", :text-align "center"}

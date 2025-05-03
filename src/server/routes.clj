@@ -2,7 +2,6 @@
   (:require [blog.article-view :refer [article-page article-page-meta]]
             [blog.articles :refer [articles-list]]
             [blog.view :refer [blog-page]]
-            [cv.view :refer [cv-download-page]]
             [hiccup2.core :as h]
             [home.view :refer [home-page]]
             [index.layout :refer [Layout]]
@@ -23,10 +22,6 @@
 (def blog_get
   (make_page_handler {:title "beldmian's blog articles", :description ""}
                      blog-page))
-
-(def cv_get
-  (make_page_handler {:title "beldmian's cv", :description ""}
-                     cv-download-page))
 
 (defn article_get
   [req]
@@ -64,7 +59,7 @@
 (def routes
   (into []
         (concat (map #(vector (nth % 0) (exchange/constantly (nth % 1)))
-                  [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]
+                  [["/" index_get] ["/blog" blog_get]
                    ["/rss" (make-rss-feed-handler articles-list)]])
                 (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
                   [["/public/*path" static_handler]

@@ -54,6 +54,5 @@
 
 (def Navigation
   [:div {:class "nav"} (nav_link "beldmian" "/" false)
-   (nav_link "articles" "/blog" false) (nav_link "cv" "/cv" false)
-   (nav_link "rss" "/rss" true)
+   (nav_link "articles" "/blog" false) (nav_link "rss" "/rss" true)
    (nav_link "github" "https://github.com/beldmian" true)])

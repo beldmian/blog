@@ -7,7 +7,7 @@
 (def base-styles
   [:*
    {:box-sizing "border-box",
-    :font-family "'Roboto', sans-serif",
+    :font-family "'Fira Code', sans-serif",
     :font-optical-sizing "auto",
     :font-weight "400",
     :font-style "normal",
@@ -66,13 +66,12 @@
    ;; Links
    [:a
     {:color colors/primary,
-     :text-decoration "none",
      :transition "all 0.2s ease",
-     :position "relative"}
-    [:&:hover {:color colors/primary-light, :text-decoration "underline"}]]
+     :position "relative",
+     :text-decoration "underline"} [:&:hover {:color colors/primary-light}]]
    ;; Code blocks
    [:code
-    {:font-family "monospace",
+    {:font-family "Fira Code",
      :background-color colors/surface,
      :padding (str (responsive/spacing :xs) " " (responsive/spacing :sm)),
      :border-radius "3px",

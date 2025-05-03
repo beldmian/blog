@@ -66,8 +66,6 @@
 ;; Blog page
 (def blog-page
   [:div
-   [:div {:style {:margin-bottom (responsive/spacing :lg)}} [:h1 "Articles"]
-    [:p
-     "Explore my thoughts, projects, and experiences through these articles."]]
+   [:div {:style {:margin-bottom (responsive/spacing :lg)}} [:h1 "articles"]]
    ;; Articles list
    [:div (map article-entry articles-list)]])
