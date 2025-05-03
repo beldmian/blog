@@ -23,5 +23,4 @@
     {:transform "translateY(0)",
      :box-shadow (str "0 1px 2px " (colors/rgba colors/primary-dark 0.2))}]])
 
-(defmacro Button [text link-href]
-  [:a {:class "button", :href link-href} text])
+(defmacro Button [text link-href] [:a {:class "button", :href link-href} text])

@@ -12,7 +12,6 @@
     :color colors/text-secondary,
     :font-size "0.9rem",
     :text-align "center"}
-
    ;; Footer content
    [:.footer-content
     {:display "flex",
@@ -22,17 +21,12 @@
      :max-width "1200px",
      :margin "0 auto",
      :padding (str "0 " (responsive/spacing :md))}
-
     ;; Media query for mobile
     [(responsive/media-query-max :xs)
-     {:flex-direction "column",
-      :text-align "center"}
-     [:.footer-section
-      {:margin-bottom (responsive/spacing :md)}]]]
-   ])
+     {:flex-direction "column", :text-align "center"}
+     [:.footer-section {:margin-bottom (responsive/spacing :md)}]]]])
 
 (def Footer
   [:div {:class "footer"}
    [:div {:class "footer-content"}
-     [:p "© 2024 beldmian. Built with Clojure and ❤️"]]
-    ])
+    [:p "© 2024 beldmian. Built with Clojure and ❤️"]]])

@@ -12,17 +12,18 @@
         (let [frontmatter (nth parts 1)
               content (nth parts 2)
               metadata-lines (str/split-lines frontmatter)
-              metadata-map (reduce
-                            (fn [acc line]
-                              (if-let [[_ key value] (re-matches #"([^:]+):\s*(.*)" line)]
-                                (assoc acc (keyword (str/trim key)) (str/trim value))
-                                acc))
-                            {}
-                            metadata-lines)]
-          {:metadata metadata-map
-           :content content})
-        {:metadata {} :content content}))
-    {:metadata {} :content content}))
+              metadata-map
+                (reduce (fn [acc line]
+                          (if-let [[_ key value] (re-matches #"([^:]+):\s*(.*)"
+                                                             line)]
+                            (assoc acc
+                              (keyword (str/trim key)) (str/trim value))
+                            acc))
+                  {}
+                  metadata-lines)]
+          {:metadata metadata-map, :content content})
+        {:metadata {}, :content content}))
+    {:metadata {}, :content content}))
 
 (defn get-article-files
   "Get a list of all markdown files in the articles directory.
@@ -35,14 +36,13 @@
             jar (.getJarFile conn)
             entries (enumeration-seq (.entries jar))
             article-entries (filter #(and (not (.isDirectory %))
-                                         (.startsWith (.getName %) "articles/")
-                                         (.endsWith (.getName %) ".md"))
-                                   entries)]
+                                          (.startsWith (.getName %) "articles/")
+                                          (.endsWith (.getName %) ".md"))
+                              entries)]
         (map #(io/resource (.getName %)) article-entries))
       ;; Handle filesystem resources
       (let [articles-file (io/file (.toURI articles-url))]
-        (filter #(.endsWith (.getName %) ".md")
-                (file-seq articles-file))))))
+        (filter #(.endsWith (.getName %) ".md") (file-seq articles-file))))))
 
 (defn get-article-id
   "Extract article ID from filename (without extension)."
@@ -59,12 +59,9 @@
   (let [content (slurp file)
         {:keys [metadata content]} (parse-frontmatter content)
         id (get-article-id file)]
-    {:id id
-     :metadata metadata
-     :content content}))
+    {:id id, :metadata metadata, :content content}))
 
 (defn load-all-articles
   "Load all articles with their metadata."
   []
-  (let [files (get-article-files)]
-    (map load-article files)))
+  (let [files (get-article-files)] (map load-article files)))

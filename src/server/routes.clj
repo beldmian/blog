@@ -51,9 +51,15 @@
                "Cache-Control"
                "max-age=31536000"))
 
+(defn favicon_handler
+  [_req]
+  (resp/header (resp/resource-response "public/favicon.ico")
+               "Cache-Control"
+               "max-age=31536000"))
+
 (def routes
   (into []
         (concat [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]
-                 ["/public/*path" static_handler]
-                 ["/robots.txt" robots_handler]]
+                 ["/public/*path" static_handler] ["/robots.txt" robots_handler]
+                 ["/favicon.ico" favicon_handler]]
                 article-routes)))
