@@ -2,14 +2,13 @@
   (:require [clojure.edn :as edn]
             [pohjavirta.server :as server]
             [reitit.ring :as ring]
-            [clj-async-profiler.core :as prof]
             [server.middleware.gzip :as gzip]
             [server.middleware.log :as log]
             [server.routes]
             [server.sitemap]))
 
 ; Enabling of logs reduces performance significantly
-(def config {:log false, :profiling false})
+(def config {:log false})
 
 (defn make-app
   [params]
@@ -32,5 +31,4 @@
       (server/create {:port (edn/read-string (or (System/getenv "PORT")
                                                  "8080")),
                       :host "0.0.0.0"})
-      server/start)
-  (if (:profiling config) (prof/serve-ui "0.0.0.0" 7070) ()))
+      server/start))
