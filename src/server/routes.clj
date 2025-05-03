@@ -6,7 +6,9 @@
             [hiccup2.core :as h]
             [home.view :refer [home-page]]
             [index.layout :refer [Layout]]
-            [ring.util.response :as resp]))
+            [pohjavirta.exchange :as exchange]
+            [ring.util.response :as resp]
+            [server.middleware.cache :as cache]))
 
 (defn make_page_handler
   [metadata page]
@@ -33,7 +35,8 @@
 
 (defn make_article_route
   [[id _article]]
-  [(format "/article/%s" id) (fn [_] (article_get {:path-params {:id id}}))])
+  [(format "/article/%s" id)
+   (exchange/constantly (fn [_] (article_get {:path-params {:id id}})))])
 
 (defn make_articles_router [articles] (map make_article_route articles))
 
@@ -59,7 +62,10 @@
 
 (def routes
   (into []
-        (concat [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]
-                 ["/public/*path" static_handler] ["/robots.txt" robots_handler]
-                 ["/favicon.ico" favicon_handler]]
+        (concat (map #(vector (nth % 0) (exchange/constantly (nth % 1)))
+                  [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]])
+                (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
+                  [["/public/*path" static_handler]
+                   ["/robots.txt" robots_handler]
+                   ["/favicon.ico" favicon_handler]])
                 article-routes)))

@@ -2,11 +2,14 @@
   (:require [clojure.edn :as edn]
             [pohjavirta.server :as server]
             [reitit.ring :as ring]
-            [server.middleware.cache :as cache]
+            [clj-async-profiler.core :as prof]
             [server.middleware.gzip :as gzip]
             [server.middleware.log :as log]
             [server.routes]
             [server.sitemap]))
+
+; Enabling of logs reduces performance significantly
+(def config {:log false, :profiling false})
 
 (defn make-app
   [params]
@@ -17,20 +20,17 @@
                                       server.routes/routes)]])
                      (ring/create-default-handler)
                      {:middleware [(if (:log params) log/wrap-request-log [])
-                                   cache/wrap-cache gzip/wrap-gzip],
+                                   gzip/wrap-gzip],
                       :inject-router? false,
                       :inject-match? false}))
 
-; Enabling of logs reduces performance significantly
-(def app (make-app {:log false}))
+(def app (make-app {:log (:log config)}))
 
 (defn -main
   [& _args]
-  (let [cpus (.availableProcessors (Runtime/getRuntime))]
-    (-> #'app
-        (server/create {:port (edn/read-string (or (System/getenv "PORT")
-                                                   "8080")),
-                        :host "0.0.0.0",
-                        :io-threads (* 2 cpus),
-                        :worker-threads (* 8 cpus)})
-        server/start)))
+  (-> #'app
+      (server/create {:port (edn/read-string (or (System/getenv "PORT")
+                                                 "8080")),
+                      :host "0.0.0.0"})
+      server/start)
+  (if (:profiling config) (prof/serve-ui "0.0.0.0" 7070) ()))

@@ -1,81 +1,70 @@
 ;; WARNING: Authored by Gemini 2.5 Pro AI model
-(ns server.middleware.cache)
+(ns server.middleware.cache
+  (:import [java.util.concurrent ConcurrentHashMap]))
 
 (defn- cache-key
-  "Generates a cache key from the request map.
-  Uses :uri and :query-string."
-  [{:keys [uri query-string], :as _request}]
+  [{:keys [uri query-string]}]
   (if query-string (str uri "?" query-string) uri))
 
 (defn- cacheable-response?
-  "Checks if a response is suitable for caching.
-  Must be a GET request with a 200 OK status."
   [request response]
-  (and (= :get (:request-method request)) (= 200 (:status response))))
+  (and response ; Ensure response is not nil
+       (= :get (:request-method request))
+       (:status response)
+       (<= 200 (:status response) 299)))
 
 (defn- expired?
-  "Checks if a cached item has expired."
-  [cached-item ttl-millis]
-  (let [cached-at (:cached-at cached-item)
-        now (System/currentTimeMillis)]
-    (> (- now cached-at) ttl-millis)))
+  "Checks if a cached item has expired. Handles potential nil cached-at."
+  [cached-item ttl-millis now]
+  (if-let [cached-at (:cached-at cached-item)] ; Check if timestamp exists
+    (> (- now cached-at) ttl-millis)
+    true)) ; Treat items without a timestamp as expired/invalid
 
 (defn wrap-cache
-  "Ring middleware for simple in-memory response caching.
-
-  Caches successful GET requests for a specified time-to-live (TTL).
-
-  Options:
-    :ttl - Time-to-live in seconds (default: 60)
-    :cache-store - An atom containing the cache map (defaults to a new atom)
-
-  Example:
-  (def app (wrap-cache handler {:ttl 300})) ; Cache for 5 minutes
-  "
-  [handler & [{:keys [ttl cache-store], :or {ttl 60}}]]
-  (let [cache (or cache-store (atom {})) ; Use provided atom or create a
-                                         ; new one
+  [handler & [{:keys [ttl], :or {ttl 60}}]]
+  (let [^ConcurrentHashMap cache-store (ConcurrentHashMap.)
         ttl-millis (* ttl 1000)]
     (fn [request]
-      (let [key (cache-key request)]
-        (if-let [cached-item (get @cache key)]
-          ;; Cache hit
-          (if (expired? cached-item ttl-millis)
-            ;; Expired: Fetch, cache, and return new response
-            (let [response (handler request)]
-              (when (cacheable-response? request response)
-                (swap! cache assoc
-                  key
-                  {:response response, :cached-at (System/currentTimeMillis)}))
-              response)
-            ;; Not expired: Return cached response
-            (:response cached-item))
-          ;; Cache miss: Fetch, cache (if applicable), and return
-          (let [response (handler request)]
-            (when (cacheable-response? request response)
-              (swap! cache assoc
+      (let [key (cache-key request)
+            now (System/currentTimeMillis)
+            computed-value
+              (.compute
+                cache-store
                 key
-                {:response response, :cached-at (System/currentTimeMillis)}))
-            response))))))
-
-;; --- Usage Example ---
-;; Assuming you have a Ring handler defined like this:
-;(defn time-handler [request]
-;  {:status 200
-;   :headers {"Content-Type" "text/plain"}
-;   :body (str "Current time: " (Date.))}) ; Body changes with each call
-
-;; You would wrap it like this:
-;(def app (wrap-cache time-handler {:ttl 10})) ; Cache responses for 10 seconds
-
-;; You can also combine it with the gzip middleware (order matters):
-;(def app (-> time-handler
-;             (wrap-cache {:ttl 10})
-;             (wrap-gzip))) ; Apply gzip *after* caching the original response
-
-;; Then run your app with a Ring adapter (e.g., http-kit, jetty)
-;(require '[org.httpkit.server :as http-kit])
-;(http-kit/run-server app {:port 8080})
-;; Accessing http://localhost:8080 repeatedly within 10 seconds
-;; will return the same cached time response. After 10 seconds,
-;; a new response will be generated and cached.
+                (reify
+                  java.util.function.BiFunction
+                    (apply [_ _k current-value] ; k = key, current-value
+                                                ; =
+                      ; existing map entry or nil
+                      ;; Check if current value exists, has a timestamp,
+                      ;; and is not expired
+                      (if (and current-value
+                               (:cached-at current-value)
+                               (not (expired? current-value ttl-millis now)))
+                        ;; ---- Cache Hit (Valid) ----
+                        current-value ; Return the existing value to keep
+                                      ; it in the map
+                        ;; ---- Cache Miss or Expired ----
+                        (let [response (handler request)] ; Execute the
+                                                          ; handler
+                          (if (cacheable-response? request response)
+                            ;; Cacheable: Return new item to store it
+                            {:response response, :cached-at now}
+                            ;; Not Cacheable: Return a temporary item
+                            ;; with nil timestamp. This item will be
+                            ;; stored briefly by .compute
+                            {:response response, :cached-at nil}))))))]
+        ;; --- Post-.compute processing --- computed-value now holds
+        ;; whatever the BiFunction returned
+        ;; (which .compute also stored in the map)
+        ;; Check if the item stored has a nil timestamp (our marker for
+        ;; non-cacheable)
+        (if (nil? (:cached-at computed-value))
+          ;; It was a non-cacheable response, stored temporarily
+          (do (.remove cache-store key) ; Clean up the temporary entry
+              (:response computed-value)) ; Return the actual response
+                                          ; from the temporary item
+          ;; It was a valid hit or a cacheable miss/expiration
+          (:response computed-value))) ; Return the response from the
+                                       ; (now permanent) map item
+    )))

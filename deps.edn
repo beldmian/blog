@@ -1,9 +1,10 @@
-{:aliases {:attach {:extra-deps {com.clojure-goes-fast/clj-async-profiler
-                                   {:mvn/version "1.4.0"}},
-                    :jvm-opts ["-Djdk.attach.allowAttachSelf"]},
+{:aliases {:attach {:jvm-opts ["-Djdk.attach.allowAttachSelf"
+                               "-XX:+UnlockDiagnosticVMOptions"
+                               "-XX:+DebugNonSafepoints"]},
            :uberjar {:main-opts ["-m" "uberdeps.uberjar"],
                      :replace-deps {uberdeps/uberdeps {:mvn/version "1.4.0"}}}},
- :deps {garden/garden {:mvn/version "1.3.10"},
+ :deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.4.0"},
+        garden/garden {:mvn/version "1.3.10"},
         hiccup/hiccup {:mvn/version "2.0.0-RC5"},
         markdown-clj/markdown-clj {:mvn/version "1.12.3"},
         metosin/pohjavirta {:mvn/version "0.0.1-alpha7"},
