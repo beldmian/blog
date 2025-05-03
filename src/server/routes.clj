@@ -5,7 +5,6 @@
             [hiccup2.core :as h]
             [home.view :refer [home-page]]
             [index.layout :refer [Layout]]
-            [pohjavirta.exchange :as exchange]
             [ring.util.response :as resp]
             [server.middleware.cache :as cache]
             [server.rss :refer [make-rss-feed-handler]]))
@@ -32,7 +31,7 @@
 (defn make_article_route
   [[id _article]]
   [(format "/article/%s" id)
-   (exchange/constantly (fn [_] (article_get {:path-params {:id id}})))])
+   (cache/wrap-cache (fn [_] (article_get {:path-params {:id id}})))])
 
 (defn make_articles_router [articles] (map make_article_route articles))
 
@@ -58,11 +57,10 @@
 
 (def routes
   (into []
-        (concat (map #(vector (nth % 0) (exchange/constantly (nth % 1)))
+        (concat (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
                   [["/" index_get] ["/blog" blog_get]
-                   ["/rss" (make-rss-feed-handler articles-list)]])
-                (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
-                  [["/public/*path" static_handler]
+                   ["/rss" (make-rss-feed-handler articles-list)]
+                   ["/public/*path" static_handler]
                    ["/robots.txt" robots_handler]
                    ["/favicon.ico" favicon_handler]])
                 article-routes)))
