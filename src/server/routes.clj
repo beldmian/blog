@@ -8,7 +8,8 @@
             [index.layout :refer [Layout]]
             [pohjavirta.exchange :as exchange]
             [ring.util.response :as resp]
-            [server.middleware.cache :as cache]))
+            [server.middleware.cache :as cache]
+            [server.rss :refer [make-rss-feed-handler]]))
 
 (defn make_page_handler
   [metadata page]
@@ -63,7 +64,8 @@
 (def routes
   (into []
         (concat (map #(vector (nth % 0) (exchange/constantly (nth % 1)))
-                  [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]])
+                  [["/" index_get] ["/blog" blog_get] ["/cv" cv_get]
+                   ["/rss" (make-rss-feed-handler articles-list)]])
                 (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
                   [["/public/*path" static_handler]
                    ["/robots.txt" robots_handler]
