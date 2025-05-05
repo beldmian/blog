@@ -1,6 +1,9 @@
 (ns blog.articles
   (:require [blog.metadata :as metadata]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [hiccup2.core :as h]
+            [layout.core :refer [Layout]]
+            [ui.md :refer [MarkdownRender]]))
 
 (defrecord Article [title description date contents tags])
 
@@ -20,3 +23,11 @@
       articles)))
 
 (def articles-list (load-articles-at-compile-time))
+
+(defn article-page-static [article] [:div (MarkdownRender (:contents article))])
+(defn make-article-page
+  [[id article]]
+  {id (str (h/html (h/raw "<!DOCTYPE html>")
+                   (Layout article (article-page-static article))))})
+
+(def article-pages (apply merge (map make-article-page articles-list)))

@@ -11,7 +11,12 @@
   [:html {:lang "en"}
    [:head [:meta {:charset "UTF-8"}] [:style (h/raw styles/styles)]
     [:style (h/raw (slurp (io/resource "public/css/base.css")))]
-    [:title (:title page-meta)]
+    [:link
+     {:rel "preload",
+      :href "/public/font/FiraCode-VF.woff2",
+      :as "font",
+      :type "font/woff2",
+      :crossorigin true}] [:title (:title page-meta)]
     [:meta {:name "description", :content (:description page-meta)}]
     [:meta {:name "viewport", :content "width=device-width, initial-scale=1"}]]
    [:body

@@ -1,13 +1,13 @@
 (ns server.routes
-  (:require [blog.article-view :refer [article-page article-page-meta]]
-            [blog.articles :refer [articles-list]]
+  (:require [blog.articles :refer [article-pages articles-list]]
             [blog.view :refer [blog-page]]
             [hiccup2.core :as h]
             [home.view :refer [home-page]]
             [layout.core :refer [Layout]]
             [ring.util.response :as resp]
             [server.middleware.cache :as cache]
-            [server.rss :refer [make-rss-feed-handler]]))
+            [server.rss :refer [make-rss-feed-handler]]
+            [clojure.core :as c]))
 
 (defn make_page_handler
   [metadata page]
@@ -22,20 +22,11 @@
   (make_page_handler {:title "beldmian's blog articles", :description ""}
                      blog-page))
 
-(defn article_get
-  [req]
-  {:status 200,
-   :body (str (h/html (h/raw "<!DOCTYPE html>")
-                      (Layout (article-page-meta req) (article-page req))))})
-
 (defn make_article_route
-  [[id _article]]
-  [(format "/article/%s" id)
-   (cache/wrap-cache (fn [_] (article_get {:path-params {:id id}})))])
+  [[id content]]
+  [(format "/article/%s" id) (c/constantly {:status 200, :body content})])
 
-(defn make_articles_router [articles] (map make_article_route articles))
-
-(def article-routes (make_articles_router articles-list))
+(def article-routes (map make_article_route article-pages))
 
 (defn static_handler
   [request]
@@ -60,7 +51,6 @@
         (concat (map #(vector (nth % 0) (cache/wrap-cache (nth % 1)))
                   [["/" index_get] ["/blog" blog_get]
                    ["/rss" (make-rss-feed-handler articles-list)]
-                   ["/public/*path" static_handler]
-                   ["/robots.txt" robots_handler]
+                   ["/public/*" static_handler] ["/robots.txt" robots_handler]
                    ["/favicon.ico" favicon_handler]])
                 article-routes)))
