@@ -1,4 +1,4 @@
-(ns index.styles
+(ns layout.styles
   (:require [garden.core :refer [css]]
             [ui.styles :as ui]
             [ui.colors :as colors]

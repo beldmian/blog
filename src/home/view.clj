@@ -1,5 +1,5 @@
 (ns home.view
-  (:require [ui.md :refer [MarkdownRender]]
-            [macro.core :as mc]))
+  (:require [clojure.java.io :as io]
+            [ui.md :refer [MarkdownRender]]))
 
-(def home-page (MarkdownRender (mc/inline-resource "Home.md")))
+(def home-page (MarkdownRender (slurp (io/resource "Home.md"))))

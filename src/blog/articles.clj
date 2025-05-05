@@ -4,9 +4,7 @@
 
 (defrecord Article [title description date contents tags])
 
-;; Function to load all articles at compile time
 (defn load-articles-at-compile-time
-  "Load all articles from the articles directory at compile time."
   []
   (let [articles (metadata/load-all-articles)]
     (reduce (fn [acc {:keys [id metadata content]}]
@@ -21,5 +19,4 @@
       {}
       articles)))
 
-;; Use the new approach to load articles
 (def articles-list (load-articles-at-compile-time))

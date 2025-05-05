@@ -4,7 +4,7 @@
             [blog.view :refer [blog-page]]
             [hiccup2.core :as h]
             [home.view :refer [home-page]]
-            [index.layout :refer [Layout]]
+            [layout.core :refer [Layout]]
             [ring.util.response :as resp]
             [server.middleware.cache :as cache]
             [server.rss :refer [make-rss-feed-handler]]))

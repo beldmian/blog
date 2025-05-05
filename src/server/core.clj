@@ -1,4 +1,5 @@
 (ns server.core
+  (:gen-class)
   (:require [clojure.edn :as edn]
             [pohjavirta.server :as server]
             [reitit.ring :as ring]

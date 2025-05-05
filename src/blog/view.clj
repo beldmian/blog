@@ -68,4 +68,5 @@
   [:div
    [:div {:style {:margin-bottom (responsive/spacing :lg)}} [:h1 "articles"]]
    ;; Articles list
-   [:div (map article-entry articles-list)]])
+   [:div
+    (map article-entry (sort #(compare (:id %1) (:id %2)) articles-list))]])
